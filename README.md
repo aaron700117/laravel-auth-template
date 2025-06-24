@@ -63,7 +63,21 @@ location ~* ^.+\.(css|jpg|jpeg|gif|png|ico|gz|svg|svgz|ttf|otf|woff|woff2|eot|mp
 检查Nginx的配置,爬坑最终发现:图片、js/css文件都会nginx中优先先匹配
 原文:https://blog.csdn.net/huaishitou/article/details/103883763
 
-#### 刀鋒樣板 加載flux
+**如果沒使用CloudPanel只使用純Nginx**
+### 官方修改如下
+### 設定 nginx
+如果您在載入 Flux 的 JavaScript 和 CSS 資源時遇到問題，則可能需要設定 nginx 伺服器以允許這種情況發生。
+預設情況下，Flux 在您的應用程式中公開兩個路由來提供其資產：**/flux/flux.js**和 **/flux/flux.css**。
+對於大多數應用程式來說這都沒問題，但是如果您使用自訂配置的 nginx，您可能會從此端點收到 404。
+若要解決此問題，您可以將以下內容新增至 nginx 設定中：
+```
+location ~ ^/flux/flux(\.min)?\.(js|css)$ {
+    expires off;
+    try_files $uri $uri/ /index.php?$query_string;
+}
+```
+
+### 刀鋒樣板 加載flux
 檔案路徑: laravel-auth-template/resources/views/components/layouts/app/header.blade.php
 ```
 <head>        
